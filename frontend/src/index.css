@@ -15,10 +15,26 @@ button {
   cursor: pointer;
 }
 
+
+.reel-item {
+  scroll-snap-align: start;
+}
+
 .reel-scroll {
+  height: calc(100dvh - 80px);
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
   scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.reel-scroll::-webkit-scrollbar {
+  display: none;
 }
 
 .reel-item {
   scroll-snap-align: start;
+  scroll-snap-stop: always;
 }

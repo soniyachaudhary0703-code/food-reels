@@ -23,60 +23,89 @@ export default function ReelCard({ reel }) {
   const { user } = useAuth();
   const { addToCart } = useCart();
 
-  // Autoplay when reel enters viewport
+  // Load the video only when it is near the viewport.
   useEffect(() => {
     const video = videoRef.current;
-
     if (!video) return;
 
-    const observer = new IntersectionObserver(
+    const loadVideo = () => {
+      if (!video.getAttribute("src")) {
+        const source = video.dataset.src;
+        if (!source) return;
+
+        video.src = source;
+        video.load();
+      }
+    };
+
+    const preloadObserver = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          video
-            .play()
+          loadVideo();
+          preloadObserver.disconnect();
+        }
+      },
+      { rootMargin: "300px 0px", threshold: 0 }
+    );
+
+    // Autoplay only when most of the reel is visible.
+    const playObserver = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.7) {
+          loadVideo();
+
+          video.play()
             .then(() => setPlaying(true))
-            .catch(() => {});
+            .catch(() => setPlaying(false));
         } else {
           video.pause();
           setPlaying(false);
         }
       },
-      {
-        threshold: 0.7,
-      }
+      { threshold: [0, 0.7, 1] }
     );
 
-    observer.observe(video);
+    preloadObserver.observe(video);
+    playObserver.observe(video);
 
-    return () => observer.disconnect();
-  }, []);
+    return () => {
+      preloadObserver.disconnect();
+      playObserver.disconnect();
+      video.pause();
+    };
+  }, [reel.video]);
 
   // Play / Pause
-  const togglePlay = () => {
+  const togglePlay = async () => {
     const video = videoRef.current;
-
     if (!video) return;
 
-    if (video.paused) {
-      video.play();
-      setPlaying(true);
-    } else {
-      video.pause();
+    try {
+      if (video.paused) {
+        if (!video.getAttribute("src")) {
+          video.src = video.dataset.src;
+          video.load();
+        }
+
+        await video.play();
+        setPlaying(true);
+      } else {
+        video.pause();
+        setPlaying(false);
+      }
+    } catch (error) {
       setPlaying(false);
+      console.error("Video playback failed:", error);
+      toast.error("Video could not play. Please try again.");
     }
   };
 
   // Like
   const handleLike = async () => {
-    if (!user) {
-      return toast("Login first");
-    }
+    if (!user) return toast("Login first");
 
     try {
-      const { data } = await api.post(
-        `/reels/${reel._id}/like`
-      );
-
+      const { data } = await api.post(`/reels/${reel._id}/like`);
       setLiked(data.liked);
     } catch {
       toast.error("Like failed");
@@ -86,10 +115,7 @@ export default function ReelCard({ reel }) {
   // Get comments
   const getComments = async () => {
     try {
-      const { data } = await api.get(
-        `/comments/${reel._id}`
-      );
-
+      const { data } = await api.get(`/comments/${reel._id}`);
       setComments(data);
       setOpen(true);
     } catch {
@@ -120,14 +146,11 @@ export default function ReelCard({ reel }) {
           url: window.location.href,
         });
       } else {
-        await navigator.clipboard?.writeText(
-          window.location.href
-        );
-
+        await navigator.clipboard?.writeText(window.location.href);
         toast.success("Link copied");
       }
     } catch {
-      // User cancelled share
+      // User cancelled sharing.
     }
   };
 
@@ -138,20 +161,20 @@ export default function ReelCard({ reel }) {
   };
 
   return (
-    <div className="reel-item relative mx-auto h-[calc(100vh-80px)] w-full max-w-md overflow-hidden rounded-4xl bg-black shadow-2xl sm:h-[calc(100vh-90px)]">
+    <div className="reel-item relative mx-auto h-full min-h-full w-full shrink-0 snap-start overflow-hidden rounded-4xl bg-black shadow-2xl">
 
       {/* Food Video */}
       <video
         ref={videoRef}
-        src={reel.video}
+        data-src={reel.video}
         muted={muted}
         loop
         playsInline
-        preload="metadata"
+        preload="none"
         className="h-full w-full cursor-pointer object-cover"
-        onError={() =>
-          toast.error(`Video missing: ${reel.video}`)
-        }
+        onPlay={() => setPlaying(true)}
+        onPause={() => setPlaying(false)}
+        onError={() => toast.error("Video could not load")}
         onClick={togglePlay}
       />
 
@@ -197,6 +220,7 @@ export default function ReelCard({ reel }) {
         onClick={togglePlay}
         className="absolute left-3 top-3 cursor-pointer rounded-full bg-white/90 p-3 transition hover:scale-105 sm:left-4 sm:top-4"
         title={playing ? "Pause" : "Play"}
+        aria-label={playing ? "Pause video" : "Play video"}
       >
         {playing ? <Pause /> : <Play />}
       </button>
