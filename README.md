@@ -1,51 +1,90 @@
-FoodReel — Food Discovery and Ordering App
-A MERN stack food application with vertical food reels, user and hotel manager accounts, and interactive food discovery features.
-Demo: https://food-reels-ten.vercel.app/
-GitHub: https://github.com/soniyachaudhary0703-code/food-reels
-Features
+# FoodReel — Food Reels & Ordering App
+
+A food discovery application inspired by Zomato, where users can explore food reels, discover restaurants, and enjoy an interactive food browsing experience.
+
+**Demo:** https://food-reels-ten.vercel.app/
+
+**GitHub:** https://github.com/soniyachaudhary0703-code/food-reels
+
+## Features
+
 - Explore food through vertical video reels
-- Browse food categories and reel details
-- User registration and login
-- Separate user and hotel manager roles
-- Like, comment, save, share, and mute reel interactions
-- Add food items to the cart
-- Manager dashboard for managing food reels
-- JWT-based authentication and protected manager routes
-- Responsive interface with smooth reel scrolling and playback
-Technologies Used
-Frontend: React, JavaScript, Tailwind CSS, React Router, Axios, Lucide React, React Hot Toast
-Backend: Node.js, Express.js, MongoDB, Mongoose, JWT, bcryptjs
-Deployment: Vercel
-Demo Login Details
-User account
-Email: user@foodreel.com
-Password: user123
-Hotel Manager account
-Email: manager@foodreel.com
-Password: manager123
-Note: These demo accounts are created by running the backend seed script against your configured database. They may not be available on the live demo unless its backend and database have been seeded accordingly.
-Installation and Setup
+- Browse food categories and discover dishes
+- User and hotel manager login
+- Like, comment, save, and share reels
+- Mute and unmute videos
+- Add food items to cart and place orders
+- Restaurant and food discovery
+- Responsive user interface
+
+## Technologies Used
+
+**Frontend:** React, JavaScript, Tailwind CSS
+
+**Backend:** Node.js, Express.js
+
+**Database:** MongoDB
+
+**Deployment:** Vercel
+
+## Demo Login Details
+
+**User Email:** `user@foodreel.com`
+
+**User Password:** `user123`
+
+**Hotel Manager Email:** `manager@foodreel.com`
+
+**Hotel Manager Password:** `manager123`
+
+*Note: These are demo credentials intended for seeded accounts. Their availability depends on the backend database and configuration.*
+
+## Installation and Setup
+
 1. Clone the repository:
+
+   ```bash
    git clone https://github.com/soniyachaudhary0703-code/food-reels.git
+   ```
+
 2. Open the project folder:
+
+   ```bash
    cd food-reels
-3. Set up the backend:
-   cd backend
+   ```
+
+3. Install frontend dependencies:
+
+   ```bash
    npm install
-4. Configure backend/.env with your MongoDB connection string and required environment variables.
-5. Seed the database with demo users and sample reels:
-   node seed.js
-6. Start the backend:
-   node server.js
-7. Open a new terminal and start the frontend:
-   cd frontend
-   npm install
+   ```
+
+4. Start the frontend:
+
+   ```bash
    npm run dev
-8. Open the local URL shown in the frontend terminal.
-Video files: Add the required vertical MP4 food videos to frontend/public/videos/ using the filenames referenced by the seed data (for example, noodles.mp4, pizza.mp4, burger.mp4, biryani.mp4, pasta.mp4, and dessert.mp4).
-How It Works
-React components manage the interface, Context manages shared authentication and cart state, Axios sends API requests to Express, and Mongoose connects the backend to MongoDB. JWT authentication protects APIs, while manager middleware restricts manager-only actions.
-Developer
-Soniya Chaudhary
-GitHub: https://github.com/soniyachaudhary0703-code
-Portfolio: https://portfolio-gamma-beryl-66.vercel.app/
+   ```
+
+5. Open the local URL shown in your terminal.
+
+**Backend setup:** Open the backend folder, install its dependencies, configure the environment variables, and connect MongoDB.
+
+Start the backend using:
+
+```bash
+npm start
+```
+
+To seed the database, use:
+
+```bash
+npm run seed
+```
+
+## Developer
+
+**Soniya Chaudhary**
+
+**GitHub:** https://github.com/soniyachaudhary0703-code
+
+**Portfolio:** https://portfolio-gamma-beryl-66.vercel.app/
