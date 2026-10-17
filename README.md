@@ -37,7 +37,7 @@ A food discovery application inspired by Zomato, where users can explore food re
 
 **Hotel Manager Password:** `manager123`
 
-*Note: These are demo credentials intended for seeded accounts. Their availability depends on the backend database and configuration.*
+
 
 ## Installation and Setup
 
